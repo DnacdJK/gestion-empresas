@@ -1,0 +1,227 @@
+
+<div class="page">
+  <section class="company-card">
+
+    <div *ngIf="mensaje" class="message success-message">
+      {{ mensaje }}
+    </div>
+
+    <div *ngIf="error" class="message error-message">
+      {{ error }}
+    </div>
+
+    <!-- LISTADO DE EMPRESAS -->
+    <section *ngIf="vista === 'listado'">
+      <header class="form-header">
+        <div class="heading">
+          <h1>Gestión de empresas</h1>
+          <p>Administra y consulta la información de tus empresas</p>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn-save" (click)="nuevaEmpresa()">
+            + Nueva empresa
+          </button>
+        </div>
+      </header>
+
+      <div class="table-container">
+        <table class="company-table">
+          <thead>
+            <tr>
+              <th>Nombre comercial</th>
+              <th>Razón social</th>
+              <th>Teléfono</th>
+              <th>NIT</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let empresa of empresas; let i = index"
+                [class.row-celeste]="i % 2 === 0"
+                [class.row-verde]="i % 2 !== 0">
+              <td>{{ empresa.nombreComercial }}</td>
+              <td>{{ empresa.razonSocial }}</td>
+              <td>{{ empresa.telefono }}</td>
+              <td>{{ empresa.nit }}</td>
+              <td>
+                <span [class.status-active]="empresa.estado === 'Activo'"
+                      [class.status-inactive]="empresa.estado === 'Inactivo'"
+                      class="status">
+                  {{ empresa.estado }}
+                </span>
+              </td>
+              <td>
+                <div class="table-actions">
+                  <button type="button" class="btn-small btn-detail"
+                          (click)="verDetalle(empresa)">
+                    Ver
+                  </button>
+                  <button type="button" class="btn-small btn-edit"
+                          (click)="editarEmpresa(empresa)">
+                    Editar
+                  </button>
+                  <button type="button" class="btn-small btn-delete"
+                          (click)="eliminarEmpresa(empresa)">
+                    Eliminar
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <tr *ngIf="empresas.length === 0">
+              <td colspan="6" class="empty-state">
+                No hay empresas registradas. Selecciona «Nueva empresa» para comenzar.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="results-count">
+        Total de empresas: {{ empresas.length }}
+      </p>
+    </section>
+
+    <!-- FORMULARIO DE REGISTRO Y EDICIÓN -->
+    <section *ngIf="vista === 'formulario'">
+      <header class="form-header">
+        <div class="heading">
+          <h1>{{ modo === 'crear' ? 'Registrar empresa' : 'Editar empresa' }}</h1>
+          <p>
+            {{ modo === 'crear'
+              ? 'Completa los campos para registrar una nueva empresa'
+              : 'Utiliza los campos para actualizar datos' }}
+          </p>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn-cancel" (click)="volverListado()">
+            Cancelar
+          </button>
+          <button type="button" class="btn-save" (click)="guardarEmpresa()">
+            Guardar
+          </button>
+        </div>
+      </header>
+
+      <form class="company-form" (ngSubmit)="guardarEmpresa()">
+        <div class="form-field">
+          <label for="nombreComercial">Nombre comercial</label>
+          <input id="nombreComercial" name="nombreComercial"
+                 type="text" [(ngModel)]="empresaActual.nombreComercial"
+                 placeholder="Escribir aquí..." required />
+        </div>
+
+        <div class="form-field">
+          <label for="razonSocial">Razón social</label>
+          <input id="razonSocial" name="razonSocial"
+                 type="text" [(ngModel)]="empresaActual.razonSocial"
+                 placeholder="Escribir aquí..." required />
+        </div>
+
+        <div class="form-field">
+          <label for="telefono">Teléfono</label>
+          <input id="telefono" name="telefono"
+                 type="tel" [(ngModel)]="empresaActual.telefono"
+                 placeholder="Escribir aquí..." required />
+        </div>
+
+        <div class="form-field">
+          <label for="correo">Correo electrónico</label>
+          <input id="correo" name="correo"
+                 type="email" [(ngModel)]="empresaActual.correo"
+                 placeholder="Escribir aquí..."
+                 [readonly]="modo === 'editar'"
+                 [required]="modo === 'crear'" />
+          <small *ngIf="modo === 'editar'" class="field-help">
+            El correo electrónico no se puede modificar.
+          </small>
+        </div>
+
+        <div class="form-field">
+          <label for="nit">NIT</label>
+          <input id="nit" name="nit"
+                 type="text" [(ngModel)]="empresaActual.nit"
+                 placeholder="Escribir aquí..." required />
+        </div>
+
+        <div class="form-field">
+          <label for="estado">Estado</label>
+          <select id="estado" name="estado"
+                  [(ngModel)]="empresaActual.estado" required>
+            <option value="Activo">Activo</option>
+            <option value="Inactivo">Inactivo</option>
+          </select>
+        </div>
+
+        <div class="form-field address-field">
+          <label for="direccion">Dirección</label>
+          <input id="direccion" name="direccion"
+                 type="text" [(ngModel)]="empresaActual.direccion"
+                 placeholder="Escribir dirección..." required />
+        </div>
+      </form>
+    </section>
+
+    <!-- DETALLE DE EMPRESA -->
+    <section *ngIf="vista === 'detalle'">
+      <header class="form-header">
+        <div class="heading">
+          <h1>Detalle de empresa</h1>
+          <p>Información completa de la empresa seleccionada</p>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn-cancel" (click)="volverListado()">
+            Volver
+          </button>
+          <button type="button" class="btn-save"
+                  (click)="editarEmpresa(empresaActual)">
+            Editar
+          </button>
+        </div>
+      </header>
+
+      <div class="detail-grid">
+        <div class="detail-field">
+          <span>Nombre comercial</span>
+          <p>{{ empresaActual.nombreComercial }}</p>
+        </div>
+
+        <div class="detail-field">
+          <span>Razón social</span>
+          <p>{{ empresaActual.razonSocial }}</p>
+        </div>
+
+        <div class="detail-field">
+          <span>Teléfono</span>
+          <p>{{ empresaActual.telefono }}</p>
+        </div>
+
+        <div class="detail-field">
+          <span>Correo electrónico</span>
+          <p>{{ empresaActual.correo }}</p>
+        </div>
+
+        <div class="detail-field">
+          <span>NIT</span>
+          <p>{{ empresaActual.nit }}</p>
+        </div>
+
+        <div class="detail-field">
+          <span>Estado</span>
+          <p>{{ empresaActual.estado }}</p>
+        </div>
+
+        <div class="detail-field address-field">
+          <span>Dirección</span>
+          <p>{{ empresaActual.direccion }}</p>
+        </div>
+      </div>
+    </section>
+
+  </section>
+</div>
