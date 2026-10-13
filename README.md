@@ -1,59 +1,91 @@
-# GestionEmpresas
+# Gestión de Empresas
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.2.
+Aplicación web para gestionar empresas mediante operaciones CRUD (crear, consultar, actualizar y eliminar), desarrollada con Angular, Node.js, Express y SQLite.
 
-## Development server
+## Tecnologías utilizadas
 
-To start a local development server, run:
+- **Frontend:** Angular y TypeScript.
+- **Backend:** Node.js y Express.
+- **Base de datos:** SQLite mediante `better-sqlite3`.
+- **Comunicación:** API REST con JSON.
 
-```bash
-ng serve
-```
+## Requisitos previos
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Node.js y npm instalados.
+- Git, para clonar el repositorio.
 
-## Code scaffolding
+## Instalación y ejecución
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### 1. Clonar el repositorio
 
 ```bash
-ng generate --help
+git clone https://github.com/DnacdJK/gestion-empresas.git
+cd gestion-empresas
 ```
 
-## Building
+### 2. Configurar el backend
 
-To build the project run:
+Desde la carpeta raíz del proyecto, ejecutar:
 
 ```bash
-ng build
+cd backend
+npm install
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+La API estará disponible en:
 
-## Running unit tests
+`http://localhost:3000`
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+La base de datos SQLite se crea automáticamente en la carpeta `backend` cuando se inicia el servidor. Los datos se almacenan en el archivo `empresas.db`.
+
+**Importante:** ese archivo es local y está excluido del repositorio. Los datos creados en una computadora no se incluyen al clonar el proyecto.
+
+### 3. Configurar el frontend
+
+Abrir una segunda terminal en la carpeta raíz del proyecto y ejecutar:
 
 ```bash
-ng test
+npm install
+npm start
 ```
 
-## Running end-to-end tests
+Angular estará disponible en:
 
-For end-to-end (e2e) testing, run:
+`http://localhost:4200`
 
-```bash
-ng e2e
-```
+Mantener ambas terminales abiertas mientras se utiliza la aplicación.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Operaciones de la API
 
-## Additional Resources
+| Método | Endpoint | Descripción |
+|---|---|---|
+| GET | `/api/empresas` | Consultar todas las empresas |
+| GET | `/api/empresas/:id` | Consultar una empresa por ID |
+| POST | `/api/empresas` | Registrar una empresa |
+| PUT | `/api/empresas/:id` | Actualizar una empresa |
+| DELETE | `/api/empresas/:id` | Eliminar una empresa |
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+La API valida los datos recibidos y devuelve respuestas HTTP según el resultado de las operaciones.
+
+## Campos de la empresa
+
+- Nombre comercial
+- Razón social
+- Teléfono
+- Correo electrónico
+- NIT
+- Estado
+- Dirección
+
+## Persistencia
+
+La aplicación utiliza SQLite para almacenar los registros localmente. Para un despliegue público, el backend debe ejecutarse en un servicio compatible y utilizar almacenamiento persistente para evitar la pérdida de datos.
+
+## Ejecución local
+
+Para utilizar la aplicación, iniciar primero el backend y después el frontend. Acceder desde el navegador a `http://localhost:4200`.
+
+## Repositorio
+
+https://github.com/DnacdJK/gestion-empresas
