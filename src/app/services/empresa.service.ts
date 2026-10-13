@@ -19,7 +19,7 @@ export interface Empresa {
 })
 export class EmpresaService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/api/empresas';
+  private apiUrl = 'https://gestion-empresas-dsoj.onrender.com/api/empresas';
 
   listar(): Observable<Empresa[]> {
     return this.http.get<Empresa[]>(this.apiUrl);
